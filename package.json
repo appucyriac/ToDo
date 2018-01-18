@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "material-components-web": "^0.28.0",
+    "material-ui-datatables": "^0.18.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
