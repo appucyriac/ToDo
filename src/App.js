@@ -11,19 +11,23 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import {addToDo,removeToDo,toggleToDo} from './actions/actions';
 
-let store = createStore(todos, ['Sample']);
+let store = createStore(todos);
 const TABLE_COLS=[
    {
     key: 'id',
     label: 'Id',
-    visible:false
-  },{
+    render: (id, all) => <i class="fa fa-check-circle-o checkCircle" aria-hidden="true"></i>,
+    className:"rowId"
+  },
+     {
     key: 'task',
-    label: 'Task'
+    label: 'Task',
+    className:"rowId"
   },
   {
     key: 'status',
-    label: 'Status'
+    label: 'Status',
+    className:"rowId"
   }];
 let TABLE_DATA=[],id=0;
 
@@ -41,6 +45,7 @@ constructor(props) {
                   newItem:"",
                   id:0,
                   Data:TABLE_DATA,
+                  completedClick:false
                   };
 }
 
@@ -68,6 +73,7 @@ showCompleted(){
        TABLE_DATA.push(task);}
     })
 this.setState({Data:TABLE_DATA});
+this.setState({completedClick:true});
 }
 pendingTasks(){
     TABLE_DATA=[];
@@ -83,7 +89,9 @@ pendingTasks(){
     this.setState({Data:TABLE_DATA});
 }
 handleClick(tableRow, tableColumn, dataItem, dataItemField){
-   this.removeItem(dataItem.id);
+   if(!this.state.completedClick)
+     this.removeItem(dataItem.id);
+   this.setState({completedClick:false});
 }
 handleChange(event){
   this.setState({newItem:event.target.value});
@@ -94,12 +102,11 @@ handleChange(event){
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">To do List</h1>
-          <h1>Click on task item to mark it as completed</h1>
+          <h1 className="App-title">Notes</h1>
         </header>
         <body>
           <TextField label="New Task" onChange={this.handleChange.bind(this)}/>
-          <Button raised theme={['secondary-bg', 'text-primary-on-secondary']} id="newButton" onClick={this.addNewItem.bind(this)}>Add New</Button>
+          <Button raised theme={['secondary-bg', 'text-success']} id="newButton" onClick={this.addNewItem.bind(this)}>Add New</Button>
           <Button raised theme={['secondary-bg', 'text-primary-on-secondary']} id="removeButton" onClick={this.showCompleted.bind(this)}>Completed</Button>
           <Button raised theme={['secondary-bg', 'text-primary-on-secondary']} id="removeButton" onClick={this.pendingTasks.bind(this)}>Pending</Button>
             <MuiThemeProvider>
@@ -110,6 +117,10 @@ handleChange(event){
               data={this.state.Data}
               showCheckboxes={false}
               onCellClick={this.handleClick.bind(this)}
+              rowSizeLabel=""
+              rowSize="0"
+              page="0"
+              rowSizeList=""
             />
             </MuiThemeProvider>
         </body>
